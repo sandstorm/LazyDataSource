@@ -23,7 +23,12 @@ This greatly improves Neos UI performance for data sources with big collections 
    instead of `Neos.Neos/Inspector/Editors/SelectBoxEditor`. **All configuration options [of the data source-based select](https://neos.readthedocs.io/en/stable/References/PropertyEditorReference.html#property-type-string-array-string-selectboxeditor-dropdown-select-editor)
    apply as usual.
    
-   Example:
+   Additionally, we support the following additional `editorOptions`:
+   
+   - `dataSourceMakeNodeIndependent`: if set to TRUE, the currently selected node is NOT sent to the data source on the backend,
+     increasing the cache lifetime on the client (e.g. the system can re-use elements from other nodes)   
+   
+   **Example:**
    
    ```yaml
    'Neos.Demo:Document.Page':
@@ -48,7 +53,12 @@ This greatly improves Neos UI performance for data sources with big collections 
    instead of `Neos.Neos/Inspector/Editors/SelectBoxEditor`. **All configuration options [of the data source-based select](https://neos.readthedocs.io/en/stable/References/PropertyEditorReference.html#property-type-string-array-string-selectboxeditor-dropdown-select-editor)
    apply as usual.
    
-   Example:
+   Additionally, we support the following additional `editorOptions`:
+   
+   - `dataSourceMakeNodeIndependent`: if set to TRUE, the currently selected node is NOT sent to the data source on the backend,
+     increasing the cache lifetime on the client (e.g. the system can re-use elements from other nodes)
+   
+   **Example:**
    
    ```yaml
    'Neos.Demo:Document.Page':
@@ -70,7 +80,7 @@ This greatly improves Neos UI performance for data sources with big collections 
                dataSourceIdentifier: lazy-editor-test
    ```
    
-   **Do not forget to set the property type to `array<string>`.
+   **Do not forget to set the property type to `array<string>`.**
 
 4. In your `DataSource` implementation on the server, use the `LazyDataSourceTrait` and implement the two methods `getDataForIdentifiers()`
    and `searchData()`. Do not implement `getData()` (as this is provided by the trait).
@@ -113,6 +123,7 @@ This greatly improves Neos UI performance for data sources with big collections 
    ```
 
 ## Development 
+
 This project works with yarn. The build process given by the neos developers is not very
 configurable, only the target dir for the buildprocess is adjustable by 
 package.json.

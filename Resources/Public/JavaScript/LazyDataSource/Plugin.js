@@ -1493,14 +1493,14 @@ exports.default = function (_ref) {
                         dataSourceIdentifier: this.props.options.dataSourceIdentifier,
                         dataSourceUri: this.props.options.dataSourceUri,
                         dataSourceAdditionalData: this.props.options.dataSourceAdditionalData,
-                        dataSourceDisableCaching: Boolean(this.props.options.dataSourceDisableCaching)
+                        dataSourceDisableCaching: Boolean(this.props.options.dataSourceDisableCaching),
+                        dataSourceMakeNodeIndependent: Boolean(this.props.options.dataSourceMakeNodeIndependent)
                     };
                 }
             }, {
                 key: 'render',
                 value: function render() {
                     var props = Object.assign({}, this.props, this.state);
-                    console.log("STATE", this.state);
                     var options = isMulti ? this.state.options : this.props.value ? this.state.options : this.state.searchOptions;
                     return _react2.default.createElement(WrappedComponent, _extends({}, props, {
                         options: options,
@@ -1520,7 +1520,12 @@ exports.default = function (_ref) {
                 dataSourceIdentifier: _propTypes2.default.string,
                 dataSourceUri: _propTypes2.default.string,
                 dataSourceDisableCaching: _propTypes2.default.bool,
-                dataSourceAdditionalData: _propTypes2.default.objectOf(_propTypes2.default.any)
+                dataSourceAdditionalData: _propTypes2.default.objectOf(_propTypes2.default.any),
+
+                // If dataSourceMakeNodeIndependent is TRUE, the dataLoader is not transmitting the currently selected node
+                // to the backend; increasing the cache lifetime for the dataloaders in the client (e.g. the system can re-use
+                // elements from other nodes)
+                dataSourceMakeNodeIndependent: _propTypes2.default.bool
             }),
 
             lazyDataSourceDataLoader: _propTypes2.default.shape({
@@ -1528,11 +1533,7 @@ exports.default = function (_ref) {
                 resolveValues: _propTypes2.default.func.isRequired,
                 search: _propTypes2.default.func.isRequired
             }).isRequired,
-            nodeTypeRegistry: _propTypes2.default.shape({
-                getNodeType: _propTypes2.default.func.isRequired
-            }),
-
-            contextForNodeLinking: _propTypes2.default.object.isRequired
+            focusedNodePath: _propTypes2.default.string
         }, _temp2)) || _class) || _class);
 
         return LazyDataSourceDataLoader;
@@ -1590,7 +1591,15 @@ var _DataSourceSelectEditor2 = _interopRequireDefault(_DataSourceSelectEditor);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function makeCacheKey(prefix, params) {
-    return prefix + JSON.stringify(params);
+    if (params.options && params.options.dataSourceMakeNodeIndependent) {
+        // if dataSourceMakeNodeIndependent, remove contextNodePath from the cache key.
+        params = JSON.parse(JSON.stringify(params)); // Deep copy
+        delete params.options.contextNodePath;
+    }
+    var cacheKey = prefix + JSON.stringify(params);
+
+    console.log("CC", cacheKey);
+    return cacheKey;
 }
 
 (0, _neosUiExtensibility2.default)('Sandstorm.LazyDataSource:Plugin', {}, function (globalRegistry, _ref) {
@@ -1609,7 +1618,7 @@ function makeCacheKey(prefix, params) {
 
     var dataLoadersRegistry = globalRegistry.get('dataLoaders');
     dataLoadersRegistry.set('SandstormLazyDataSourceLoader', {
-        description: '\n            Look up Data Source values:\n\n            - by identifier (resolveValue())\n            - by searching in data source (search())\n\n            OPTIONS:\n            - contextNodePath: ...\n            - dataSourceIdentifier: The data source to load. Either this or dataSourceUri is required.\n            - dataSourceUri: The data source URL to load.\n            - dataSourceDisableCaching: Disable default _lru caching option.\n            - dataSourceAdditionalData: Additional data to send to the server\n        ',
+        description: '\n            Look up Data Source values:\n\n            - by identifier (resolveValue())\n            - by searching in data source (search())\n\n            OPTIONS:\n            - contextNodePath: ...\n            - dataSourceIdentifier: The data source to load. Either this or dataSourceUri is required.\n            - dataSourceUri: The data source URL to load.\n            - dataSourceDisableCaching: Disable default _lru caching option.\n            - dataSourceAdditionalData: Additional data to send to the server\n\n            EXTRA OPTIONS:\n            - dataSourceMakeNodeIndependent: If set to TRUE, the dataLoader is not transmitting the currently selected node\n              to the backend; increasing the cache lifetime for the dataloaders in the client (e.g. the system can re-use\n              elements from other nodes)\n        ',
 
         _lru: function _lru() {
             if (!this._lruCache) {
@@ -1642,9 +1651,8 @@ function makeCacheKey(prefix, params) {
 
             var result = void 0;
             if (identifiersNotInCache.length > 0) {
-                console.log("NOT IN CACHE");
                 // Build up query
-                var params = Object.assign({ node: options.contextNodePath }, options.dataSourceAdditionalData || {}, {
+                var params = Object.assign(options.dataSourceMakeNodeIndependent ? {} : { node: options.contextNodePath }, options.dataSourceAdditionalData || {}, {
                     identifiers: identifiersNotInCache
                 });
                 // Trigger query
@@ -1675,7 +1683,6 @@ function makeCacheKey(prefix, params) {
                     );
                 });
             } else {
-                console.log("ALL IN CACHE");
                 // We know all identifiers are in cache.
                 result = Promise.all(identifiers.map(function (identifier) {
                     return resultPromisesByIdentifier[identifier];
@@ -1707,7 +1714,7 @@ function makeCacheKey(prefix, params) {
                 _this2._debounceTimer = window.setTimeout(resolve, 300);
             }).then(function () {
                 // Build up query
-                var searchQuery = Object.assign({ node: options.contextNodePath }, options.dataSourceAdditionalData || {}, {
+                var searchQuery = Object.assign(options.dataSourceMakeNodeIndependent ? {} : { node: options.contextNodePath }, options.dataSourceAdditionalData || {}, {
                     searchTerm: searchTerm
                 });
 

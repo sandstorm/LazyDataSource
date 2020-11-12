@@ -6,7 +6,15 @@ import DataSourceSelectEditor from './Editors/DataSourceSelectEditor';
 
 
 function makeCacheKey(prefix, params) {
-    return prefix + JSON.stringify(params);
+    if (params.options && params.options.dataSourceMakeNodeIndependent) {
+        // if dataSourceMakeNodeIndependent, remove contextNodePath from the cache key.
+        params = JSON.parse(JSON.stringify(params)); // Deep copy
+        delete params.options.contextNodePath;
+    }
+    const cacheKey = prefix + JSON.stringify(params);
+
+    console.log("CC", cacheKey);
+    return cacheKey;
 }
 
 manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfiguration}) => {
@@ -36,6 +44,11 @@ manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfig
             - dataSourceUri: The data source URL to load.
             - dataSourceDisableCaching: Disable default _lru caching option.
             - dataSourceAdditionalData: Additional data to send to the server
+
+            EXTRA OPTIONS:
+            - dataSourceMakeNodeIndependent: If set to TRUE, the dataLoader is not transmitting the currently selected node
+              to the backend; increasing the cache lifetime for the dataloaders in the client (e.g. the system can re-use
+              elements from other nodes)
         `,
 
         _lru() {
@@ -67,9 +80,8 @@ manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfig
 
             let result;
             if (identifiersNotInCache.length > 0) {
-                console.log("NOT IN CACHE");
                 // Build up query
-                const params = Object.assign({node: options.contextNodePath}, options.dataSourceAdditionalData || {}, {
+                const params = Object.assign(options.dataSourceMakeNodeIndependent ? {} : {node: options.contextNodePath}, options.dataSourceAdditionalData || {}, {
                     identifiers: identifiersNotInCache
                 });
                 // Trigger query
@@ -98,7 +110,6 @@ manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfig
                     );
                 });
             } else {
-                console.log("ALL IN CACHE")
                 // We know all identifiers are in cache.
                 result = Promise.all(
                     identifiers.map(identifier =>
@@ -128,7 +139,7 @@ manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfig
                 this._debounceTimer = window.setTimeout(resolve, 300);
             }).then(() => {
                 // Build up query
-                const searchQuery = Object.assign({node: options.contextNodePath}, options.dataSourceAdditionalData || {}, {
+                const searchQuery = Object.assign(options.dataSourceMakeNodeIndependent ? {} : {node: options.contextNodePath}, options.dataSourceAdditionalData || {}, {
                     searchTerm
                 });
 

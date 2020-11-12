@@ -20,6 +20,11 @@ export default ({isMulti}) => WrappedComponent => {
                 dataSourceUri: PropTypes.string,
                 dataSourceDisableCaching: PropTypes.bool,
                 dataSourceAdditionalData: PropTypes.objectOf(PropTypes.any),
+
+                // If dataSourceMakeNodeIndependent is TRUE, the dataLoader is not transmitting the currently selected node
+                // to the backend; increasing the cache lifetime for the dataloaders in the client (e.g. the system can re-use
+                // elements from other nodes)
+                dataSourceMakeNodeIndependent: PropTypes.bool,
             }),
 
             lazyDataSourceDataLoader: PropTypes.shape({
@@ -27,11 +32,7 @@ export default ({isMulti}) => WrappedComponent => {
                 resolveValues: PropTypes.func.isRequired,
                 search: PropTypes.func.isRequired
             }).isRequired,
-            nodeTypeRegistry: PropTypes.shape({
-                getNodeType: PropTypes.func.isRequired
-            }),
-
-            contextForNodeLinking: PropTypes.object.isRequired
+            focusedNodePath: PropTypes.string,
         };
 
         state = {
@@ -90,13 +91,13 @@ export default ({isMulti}) => WrappedComponent => {
                 dataSourceIdentifier: this.props.options.dataSourceIdentifier,
                 dataSourceUri: this.props.options.dataSourceUri,
                 dataSourceAdditionalData: this.props.options.dataSourceAdditionalData,
-                dataSourceDisableCaching: Boolean(this.props.options.dataSourceDisableCaching)
+                dataSourceDisableCaching: Boolean(this.props.options.dataSourceDisableCaching),
+                dataSourceMakeNodeIndependent: Boolean(this.props.options.dataSourceMakeNodeIndependent)
             };
         }
 
         render() {
             const props = Object.assign({}, this.props, this.state);
-            console.log("STATE", this.state);
             const options = isMulti ? this.state.options : (this.props.value ? this.state.options : this.state.searchOptions);
             return (
                 <WrappedComponent
