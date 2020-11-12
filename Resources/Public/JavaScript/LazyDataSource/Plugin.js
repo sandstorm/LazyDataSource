@@ -1660,7 +1660,9 @@ function makeCacheKey(prefix, params) {
                     resultsAsArray.forEach(function (result) {
                         var cacheKey = makeCacheKey('resolve', { options: options, identifier: result.value });
                         var resultPromise = Promise.resolve(result);
-                        _this._lru().set(cacheKey, resultPromise);
+                        if (!options.dataSourceDisableCaching) {
+                            _this._lru().set(cacheKey, resultPromise);
+                        }
                         resultPromisesByIdentifier[result.value] = resultPromise;
                     });
 
@@ -1718,8 +1720,9 @@ function makeCacheKey(prefix, params) {
                         });
                     });
                 });
-
-                _this2._lru().set(cacheKey, resultPromise);
+                if (!options.dataSourceDisableCaching) {
+                    _this2._lru().set(cacheKey, resultPromise);
+                }
 
                 // Next to storing the full result in the cache, we also store each individual result in the cache;
                 // in the same format as expected by resolveValue(); so that it is already loaded and does not need
@@ -1727,7 +1730,9 @@ function makeCacheKey(prefix, params) {
                 return resultPromise.then(function (results) {
                     results.forEach(function (result) {
                         var cacheKey = makeCacheKey('resolve', { options: options, identifier: result.value });
-                        _this2._lru().set(cacheKey, Promise.resolve(result));
+                        if (!options.dataSourceDisableCaching) {
+                            _this2._lru().set(cacheKey, Promise.resolve(result));
+                        }
                     });
 
                     return results;

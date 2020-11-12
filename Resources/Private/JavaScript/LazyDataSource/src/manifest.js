@@ -84,7 +84,9 @@ manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfig
                     resultsAsArray.forEach(result => {
                         const cacheKey = makeCacheKey('resolve', {options, identifier: result.value});
                         const resultPromise = Promise.resolve(result);
-                        this._lru().set(cacheKey, resultPromise);
+                        if (!options.dataSourceDisableCaching) {
+                            this._lru().set(cacheKey, resultPromise);
+                        }
                         resultPromisesByIdentifier[result.value] = resultPromise;
                     });
 
@@ -138,8 +140,9 @@ manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfig
                         value: identifier
                     }));
                 });
-
-                this._lru().set(cacheKey, resultPromise);
+                if (!options.dataSourceDisableCaching) {
+                    this._lru().set(cacheKey, resultPromise);
+                }
 
                 // Next to storing the full result in the cache, we also store each individual result in the cache;
                 // in the same format as expected by resolveValue(); so that it is already loaded and does not need
@@ -147,7 +150,9 @@ manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfig
                 return resultPromise.then(results => {
                     results.forEach(result => {
                         const cacheKey = makeCacheKey('resolve', {options, identifier: result.value});
-                        this._lru().set(cacheKey, Promise.resolve(result));
+                        if (!options.dataSourceDisableCaching) {
+                            this._lru().set(cacheKey, Promise.resolve(result));
+                        }
                     });
 
                     return results;
