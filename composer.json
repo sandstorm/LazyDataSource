@@ -1,0 +1,27 @@
+{
+    "name": "sandstorm/lazydatasource",
+    "description": "Neos package implementing a lazy data source for the UI; so that the elements are loaded lazily on demand.",
+    "type": "neos-package",
+    "keywords": ["react", "Neos"],
+    "homepage": "https://github.com/sandstorm/LazyDataSource",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastian Kurfuerst",
+            "homepage": "https://www.sandstorm.de",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/sandstorm/LazyDataSource/issues",
+        "source": "https://github.com/sandstorm/LazyDataSource"
+    },
+    "require": {
+        "neos/neos-ui": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sandstorm\\LazyDataSource\\": "Classes"
+        }
+    }
+}

@@ -1,0 +1,7 @@
+Neos:
+  Neos:
+    Ui:
+      resources:
+        javascript:
+          'Sandstorm.LazyDataSource:Plugin':
+            resource: resource://Sandstorm.LazyDataSource/Public/JavaScript/LazyDataSource/Plugin.js
