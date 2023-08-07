@@ -3,11 +3,15 @@
     "license": "GNU GPLv3",
     "private": true,
     "scripts": {
-        "build": "neos-react-scripts build",
+        "build": "NODE_ENV=production neos-react-scripts build",
         "watch": "neos-react-scripts watch"
     },
     "devDependencies": {
-        "@neos-project/neos-ui-extensibility": "*"
+      "@neos-project/eslint-config-neos": "^2.3.0",
+      "@neos-project/neos-ui-extensibility": "~8.2.0",
+      "@neos-project/react-ui-components": "~8.2.0",
+      "eslint": "^8.25.0",
+      "webpack": "^4.44.2"
     },
     "neos": {
         "buildTargetDirectory": "../../../Public/JavaScript/LazyDataSource"
