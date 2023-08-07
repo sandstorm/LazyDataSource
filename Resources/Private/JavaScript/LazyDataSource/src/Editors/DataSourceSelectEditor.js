@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {SelectBox} from '@neos-project/react-ui-components';
 import dataLoader from './lazyDataSourceDataLoader';
+import PreviewOption from './PreviewOption';
 import {neos} from '@neos-project/neos-ui-decorators';
 
 @neos(globalRegistry => ({
@@ -48,6 +49,7 @@ export default class DataSourceSelectEditor extends PureComponent {
             allowEmpty={true}
             onSearchTermChange={onSearchTermChange}
             disabled={disabled}
+            ListPreviewElement={PreviewOption}
             />);
     }
 }
