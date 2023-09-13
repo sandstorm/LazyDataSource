@@ -1,9 +1,7 @@
 import HLRU from 'hashlru';
 import manifest from '@neos-project/neos-ui-extensibility';
 import backend from '@neos-project/neos-ui-backend-connector';
-import DataSourceMultiSelectEditor from './Editors/DataSourceMultiSelectEditor';
 import DataSourceSelectEditor from './Editors/DataSourceSelectEditor';
-
 
 function makeCacheKey(prefix, params) {
     if (params.options && params.options.dataSourceMakeNodeIndependent) {
@@ -14,18 +12,13 @@ function makeCacheKey(prefix, params) {
     return prefix + JSON.stringify(params);
 }
 
-manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfiguration}) => {
+manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry) => {
 
     const editorsRegistry = globalRegistry.get('inspector').get('editors');
 
     editorsRegistry.set('Sandstorm.LazyDataSource/Inspector/Editors/DataSourceSelectEditor', {
         component: DataSourceSelectEditor
     });
-
-    editorsRegistry.set('Sandstorm.LazyDataSource/Inspector/Editors/DataSourceMultiSelectEditor', {
-        component: DataSourceMultiSelectEditor
-    });
-
 
     const dataLoadersRegistry = globalRegistry.get('dataLoaders');
     dataLoadersRegistry.set('SandstormLazyDataSourceLoader', {

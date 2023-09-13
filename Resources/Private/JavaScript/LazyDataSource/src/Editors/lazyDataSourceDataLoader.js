@@ -1,11 +1,12 @@
 import React, {PureComponent} from 'react';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {$get, $transform} from 'plow-js';
+import {$transform} from 'plow-js';
+
 import {neos} from '@neos-project/neos-ui-decorators';
 import {selectors} from '@neos-project/neos-ui-redux-store';
-import {connect} from 'react-redux';
 
-export default ({isMulti}) => WrappedComponent => {
+export default () => WrappedComponent => {
     @neos(globalRegistry => ({
         lazyDataSourceDataLoader: globalRegistry.get('dataLoaders').get('SandstormLazyDataSourceLoader')
     }))
@@ -16,6 +17,8 @@ export default ({isMulti}) => WrappedComponent => {
         static propTypes = {
             value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
             options: PropTypes.shape({
+                multiple: PropTypes.bool,
+
                 dataSourceIdentifier: PropTypes.string,
                 dataSourceUri: PropTypes.string,
                 dataSourceDisableCaching: PropTypes.bool,
@@ -53,11 +56,12 @@ export default ({isMulti}) => WrappedComponent => {
         }
 
         resolveValue = () => {
-            const valueProvided = isMulti ? Array.isArray(this.props.value) : this.props.value;
+            const { value, options, lazyDataSourceDataLoader } = this.props;
+            const valueProvided = options.multiple ? Array.isArray(value) : value;
             if (valueProvided) {
                 this.setState({isLoading: true});
-                const resolver = isMulti ? this.props.lazyDataSourceDataLoader.resolveValues.bind(this.props.lazyDataSourceDataLoader) : this.props.lazyDataSourceDataLoader.resolveValue.bind(this.props.lazyDataSourceDataLoader);
-                resolver(this.getDataLoaderOptions(), this.props.value)
+                const resolver = options.multiple ? lazyDataSourceDataLoader.resolveValues.bind(lazyDataSourceDataLoader) : lazyDataSourceDataLoader.resolveValue.bind(lazyDataSourceDataLoader);
+                resolver(this.getDataLoaderOptions(), value)
                     .then(options => {
                         this.setState({
                             isLoading: false,
@@ -97,18 +101,23 @@ export default ({isMulti}) => WrappedComponent => {
         }
 
         render() {
-            const props = Object.assign({}, this.props, this.state);
-            const options = isMulti ? this.state.options : (this.props.value ? this.state.options : this.state.searchOptions);
+            const { options, value } = this.props;
+            const { isLoading, searchOptions } = this.state;
+
+            const config = Object.assign({}, this.props, this.state);
+            const componentOptions = options.multiple || value ? this.state.options : searchOptions;
+
             return (
                 <WrappedComponent
-                    {...props}
-                    options={options}
-                    searchOptions={this.state.searchOptions}
-                    displayLoadingIndicator={this.state.isLoading}
+                    {...config}
+                    options={componentOptions}
+                    searchOptions={searchOptions}
+                    displayLoadingIndicator={isLoading}
                     onSearchTermChange={this.handleSearchTermChange}
-                    placeholder={this.props.options.placeholder}
-                    threshold={this.props.options.threshold}
-                    />
+                    placeholder={options.placeholder}
+                    threshold={options.threshold}
+                    multiple={options.multiple}
+                />
             );
         }
     }
