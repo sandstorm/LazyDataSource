@@ -31,8 +31,6 @@ export default class DataSourceSelectEditor extends PureComponent {
     render() {
         const {className, value, i18nRegistry, threshold, options, displayLoadingIndicator, onSearchTermChange, disabled} = this.props;
 
-        console.log("OPTS", this.props);
-
         return (<SelectBox
             className={className}
             displaySearchBox={true}
