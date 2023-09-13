@@ -8,10 +8,9 @@
     },
     "devDependencies": {
       "@neos-project/eslint-config-neos": "^2.3.0",
-      "@neos-project/neos-ui-extensibility": "~8.2.0",
-      "@neos-project/react-ui-components": "~8.2.0",
-      "eslint": "^8.25.0",
-      "webpack": "^4.44.2"
+      "@neos-project/neos-ui-extensibility-webpack-adapter": "~8.3.0",
+      "@neos-project/react-ui-components": "~8.3.0",
+      "eslint": "^8.25.0"
     },
     "neos": {
         "buildTargetDirectory": "../../../Public/JavaScript/LazyDataSource"
