@@ -11,10 +11,7 @@ function makeCacheKey(prefix, params) {
         params = JSON.parse(JSON.stringify(params)); // Deep copy
         delete params.options.contextNodePath;
     }
-    const cacheKey = prefix + JSON.stringify(params);
-
-    console.log("CC", cacheKey);
-    return cacheKey;
+    return prefix + JSON.stringify(params);
 }
 
 manifest('Sandstorm.LazyDataSource:Plugin', {}, (globalRegistry, {frontendConfiguration}) => {
