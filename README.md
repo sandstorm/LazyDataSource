@@ -49,7 +49,7 @@ This greatly improves Neos UI performance for data sources with big collections 
 
 3. **for a multi select:**
 
-   In your `NodeTypes.yaml`, activate the custom editor by using `Sandstorm.LazyDataSource/Inspector/Editors/DataSourceMultiSelectEditor`
+   In your `NodeTypes.yaml`, activate the custom editor by using `Sandstorm.LazyDataSource/Inspector/Editors/DataSourceSelectEditor`
    instead of `Neos.Neos/Inspector/Editors/SelectBoxEditor`. **All configuration options [of the data source-based select](https://neos.readthedocs.io/en/stable/References/PropertyEditorReference.html#property-type-string-array-string-selectboxeditor-dropdown-select-editor)
    apply as usual.
    
@@ -72,10 +72,12 @@ This greatly improves Neos UI performance for data sources with big collections 
              group: 'document'
    
              ##### THIS IS THE RELEVANT CONFIG:
-             editor: 'Sandstorm.LazyDataSource/Inspector/Editors/DataSourceMultiSelectEditor'
+             editor: 'Sandstorm.LazyDataSource/Inspector/Editors/DataSourceSelectEditor'
              
              ##### all Select options (e.g. dataSourceAdditionalData) work as usual. 
              editorOptions:
+               allowEmpty: true
+               multiple: true
                placeholder: Choose
                dataSourceIdentifier: lazy-editor-test
    ```
