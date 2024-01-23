@@ -105,7 +105,8 @@ export default () => WrappedComponent => {
             const { isLoading, searchOptions } = this.state;
 
             const config = Object.assign({}, this.props, this.state);
-            const componentOptions = options.multiple || value ? this.state.options : searchOptions;
+            // For single-select, we want to display the search results as long as there are results
+            const componentOptions = options.multiple ? this.state.options : ((isLoading || searchOptions.length) ? searchOptions : this.state.options);
 
             return (
                 <WrappedComponent

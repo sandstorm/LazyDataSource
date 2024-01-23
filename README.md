@@ -143,7 +143,8 @@ brew install yarn
 Build the app:
 
 ```shell
-./build.sh
+./dev.sh setup
+./dev.sh build
 ```
 
 ## Contribute
