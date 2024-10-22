@@ -1,17 +1,17 @@
 <?php
 namespace Sandstorm\LazyDataSource;
 
-use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 
 trait LazyDataSourceTrait
 {
 
     /**
-     * @param NodeInterface $node The node that is currently edited (optional)
+     * @param Node $node The node that is currently edited (optional)
      * @param array $arguments Additional arguments (key / value)
      * @return array
      */
-    public function getData(NodeInterface $node = null, array $arguments = [])
+    public function getData(Node $node = null, array $arguments = [])
     {
         if (isset($arguments['identifiers'])) {
             $identifiers = $arguments['identifiers'];
@@ -31,19 +31,19 @@ trait LazyDataSourceTrait
      * these data records specifically.
      *
      * @param array $identifiers
-     * @param NodeInterface|null $node
+     * @param Node|null $node
      * @param array $arguments
      * @return mixed
      */
-    abstract protected function getDataForIdentifiers(array $identifiers, NodeInterface $node = null, array $arguments = []);
+    abstract protected function getDataForIdentifiers(array $identifiers, Node $node = null, array $arguments = []);
 
     /**
      * This method is called when the user specifies a search term.
      *
      * @param string $searchTerm
-     * @param NodeInterface|null $node
+     * @param Node|null $node
      * @param array $arguments
      * @return mixed
      */
-    abstract protected function searchData(string $searchTerm, NodeInterface $node = null, array $arguments = []);
+    abstract protected function searchData(string $searchTerm, Node $node = null, array $arguments = []);
 }

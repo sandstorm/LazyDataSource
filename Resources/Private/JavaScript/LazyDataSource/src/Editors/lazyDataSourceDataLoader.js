@@ -10,6 +10,7 @@ export default () => WrappedComponent => {
     @neos(globalRegistry => ({
         lazyDataSourceDataLoader: globalRegistry.get('dataLoaders').get('SandstormLazyDataSourceLoader')
     }))
+    // TODO ``$transform`` throws console error while in Neos BE
     @connect($transform({
         focusedNodePath: selectors.CR.Nodes.focusedNodePathSelector
     }))
