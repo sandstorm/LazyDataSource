@@ -7,15 +7,17 @@
         "watch": "neos-react-scripts watch"
     },
     "devDependencies": {
-      "@neos-project/eslint-config-neos": "^2.3.0",
-      "@neos-project/neos-ui-extensibility-webpack-adapter": "~8.3.0",
-      "@neos-project/react-ui-components": "~8.3.0",
-      "eslint": "^8.25.0"
+        "@neos-project/eslint-config-neos": "^2.3.0",
+        "@neos-project/neos-ui-extensibility-webpack-adapter": "9.0.0-beta20",
+        "@neos-project/react-ui-components": "9.0.0-beta20",
+        "eslint": "^8.25.0"
     },
+    "main": "./src/index.js",
     "neos": {
         "buildTargetDirectory": "../../../Public/JavaScript/LazyDataSource"
     },
     "dependencies": {
         "hashlru": "2.3.0"
-    }
+    },
+    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
