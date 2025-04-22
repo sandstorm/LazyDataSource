@@ -8,8 +8,8 @@
     },
     "devDependencies": {
         "@neos-project/eslint-config-neos": "^2.3.0",
-        "@neos-project/neos-ui-extensibility-webpack-adapter": "9.0.0-beta20",
-        "@neos-project/react-ui-components": "9.0.0-beta20",
+        "@neos-project/neos-ui-extensibility-webpack-adapter": "^9.0.0",
+        "@neos-project/react-ui-components": "^9.0.0",
         "eslint": "^8.25.0"
     },
     "main": "./src/index.js",
