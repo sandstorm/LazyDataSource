@@ -1,7 +1,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {$transform} from 'plow-js';
 
 import {neos} from '@neos-project/neos-ui-decorators';
 import {selectors} from '@neos-project/neos-ui-redux-store';
@@ -10,8 +9,8 @@ export default () => WrappedComponent => {
     @neos(globalRegistry => ({
         lazyDataSourceDataLoader: globalRegistry.get('dataLoaders').get('SandstormLazyDataSourceLoader')
     }))
-    @connect($transform({
-        focusedNodePath: selectors.CR.Nodes.focusedNodePathSelector
+    @connect(state => ({
+        focusedNodePath: selectors.CR.Nodes.focusedNodePathSelector(state)
     }))
     class LazyDataSourceDataLoader extends PureComponent {
         static propTypes = {
